@@ -2,7 +2,6 @@
   "name": "fast-change",
   "version": "0.0.0",
   "scripts": {
-    "prebuild": "node generate-environment.js && npm install -g @angular/cli @angular-devkit/build-angular",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
