@@ -2,6 +2,7 @@
   "name": "fast-change",
   "version": "0.0.0",
   "scripts": {
+    "prebuild": "node generate-environment.js",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
