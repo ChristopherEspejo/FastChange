@@ -2,7 +2,7 @@
   "name": "fast-change",
   "version": "0.0.0",
   "scripts": {
-    "prebuild": "node generate-environment.js && npm install",
+    "prebuild": "node generate-environment.js",
     "ng": "npx ng",
     "start": "ng serve",
     "build": "ng build",
