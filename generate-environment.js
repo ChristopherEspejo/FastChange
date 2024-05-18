@@ -15,7 +15,7 @@ const firebaseConfig = {
 // Crear el contenido del archivo `environment.ts`
 const environmentFileContent = `
 export const environment = {
-  production: ${process.env.NODE_ENV === 'production'},
+  production: true,
   firebaseConfig: ${JSON.stringify(firebaseConfig, null, 2)}
 };
 `;
