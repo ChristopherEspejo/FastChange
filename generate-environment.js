@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 // Definir las variables de entorno de Firebase que esperas obtener de Cloudflare
 const firebaseConfig = {
@@ -19,7 +20,14 @@ export const environment = {
 };
 `;
 
-// Crear el archivo `environment.ts` en `src/environments`
-fs.writeFileSync('./src/environments/environment.ts', environmentFileContent, 'utf8');
+// Crear el directorio `src/environments` si no existe
+const environmentsPath = path.join(__dirname, 'src/environments');
+if (!fs.existsSync(environmentsPath)) {
+  fs.mkdirSync(environmentsPath, { recursive: true });
+}
 
-console.log(`Environment file generated: ${environmentFileContent}`);
+// Crear el archivo `environment.ts` en `src/environments`
+const environmentFilePath = path.join(environmentsPath, 'environment.ts');
+fs.writeFileSync(environmentFilePath, environmentFileContent, 'utf8');
+
+console.log(`Environment file generated at ${environmentFilePath}`);
