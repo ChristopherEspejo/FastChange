@@ -1,0 +1,60 @@
+<div class="flex flex-col md:flex-row min-h-screen">
+  <!-- Botón de Toggle para Sidebar en dispositivos pequeños -->
+  <button class="md:hidden p-4 focus:outline-none focus:bg-blue-600 bg-blue-600 " (click)="toggleMenu()">
+    <i class="fas fa-bars text-white"></i>
+  </button>
+  <!-- Sidebar -->
+  <!-- Sidebar -->
+  <nav [ngClass]="{'hidden': !isMenuOpen, 'md:block': true}" class="bg-blue-600 text-white w-full md:w-1/5">
+    <div class="text-center py-4 md:py-10">
+      <div  class="flex items-center text-center mx-auto  w-40 h-10"> <!-- Reducir la altura aquí -->
+        <img src="./assets/svg/Cambialo.svg" class="w-full h-auto  filter" alt="Logo">
+      </div>
+    </div>
+    <div class="px-3">
+      <ul class="space-y-2">
+        <li>
+          <a [routerLink]="['homepage']" class="flex items-center gap-2 py-2 px-3 hover:bg-blue-700 rounded">
+            <i class="fas fa-home"></i>
+            <span>Inicio</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['history']" class="flex items-center gap-2 py-2 px-3 hover:bg-blue-700 rounded">
+            <i class="fas fa-history"></i>
+            <span>Historial de Operaciones</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['profile']" class="flex items-center gap-2 py-2 px-3 hover:bg-blue-700 rounded">
+            <i class="fas fa-user-circle"></i>
+            <span>Perfil</span>
+          </a>
+        </li>
+        <!-- Separador visual -->
+        <li class="border-t border-white my-2"></li>
+        <!-- Opción de Cerrar Sesión -->
+        <li>
+          <a (click)="logout()" class="flex items-center gap-2 py-2 px-3 hover:bg-red-500 hover:text-white rounded cursor-pointer">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar sesión</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-2 bg-gray-100">
+
+
+      <!-- Otros componentes -->
+
+      <!-- Contenido de la aplicación -->
+
+
+    <router-outlet></router-outlet>
+  </main>
+</div>
+

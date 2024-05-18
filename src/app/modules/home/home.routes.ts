@@ -1,20 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
-import { LoginComponent } from '../auth/login/login.component';
-import { RegisterComponent } from '../auth/register/register.component';
+import {TermsAndConditionsComponent} from "./pages/terms-and-conditions/terms-and-conditions.component";
+import {AboutUsComponent} from "./pages/about-us/about-us.component";
+import {FrequentQuestionsComponent} from "./pages/frequent-questions/frequent-questions.component";
+// Importaciones de componentes eliminadas ya que no se manejarán aquí
 
 const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
-      // otras rutas hijas...
-    ]
+    // Hijos eliminados o movidos a sus respectivos módulos
   },
-
+  {
+    path: 'terms',
+    component: TermsAndConditionsComponent
+  },
+  {
+    path: 'about-us',
+    component: AboutUsComponent
+  },
+  {
+    path: 'faq',
+    component: FrequentQuestionsComponent
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
+  // Puedes incluir aquí otras rutas relacionadas específicamente con el Home si es necesario
 ];
 
 @NgModule({

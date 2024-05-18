@@ -1,0 +1,33 @@
+<nav class="bg-blue-500 text-white">
+  <div class="max-w-6xl mx-auto ">
+    <div class="flex justify-between items-center">
+      <!-- logo -->
+      <div>
+        <a [routerLink]="['/home']" class="flex items-center   w-40 h-24"> <!-- Reducir la altura aquí -->
+          <img src="./assets/svg/Cambialo.svg" class="w-full h-auto filter" alt="Logo">
+        </a>
+
+
+      </div>
+
+      <!-- mobile button -->
+      <div class="md:hidden">
+        <button (click)="toggleMobileMenu()">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+      </div>
+
+      <!-- primary nav -->
+      <div class="hidden md:flex items-center space-x-1">
+        <a [routerLink]="['auth/login']" class="py-5 px-3 hover:text-gray-200 text-lg ">Ingresa</a>
+        <a [routerLink]="['auth/register']" class="py-5 px-3 hover:text-gray-200 text-lg">Registrate</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- mobile menu -->
+  <div *ngIf="mobileMenuOpen" class="md:hidden">
+    <a [routerLink]="['auth/login']" class="block py-2 px-4 text-sm hover:bg-blue-700">Ingresa</a>
+    <a [routerLink]="['auth/register']" class="block py-2 px-4 text-sm hover:bg-blue-700">Registrate</a>
+  </div>
+</nav>

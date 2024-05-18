@@ -1,0 +1,244 @@
+<!-- Componente: HomePageComponent -->
+<div class="container mx-auto p-4">
+  <!-- Navegación de pasos -->
+  <div class="flex items-center justify-center space-x-4 my-4">
+    <div [ngClass]="{'text-blue-600': step === 1, 'text-gray-400': step !== 1}">1. Registra</div>
+    <hr class="flex-1">
+    <div [ngClass]="{'text-blue-600': step === 2, 'text-gray-400': step !== 2}">2. Transfiere</div>
+    <hr class="flex-1">
+    <div [ngClass]="{'text-blue-600': step === 3, 'text-gray-400': step !== 3}">3. Confirma</div>
+  </div>
+
+  <!-- Contenido de cada paso -->
+  <div *ngIf="step === 1" class="mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Contenido para el paso 1 (Registra) -->
+    <div class="flex flex-col md:flex-row gap-8  items-start justify-around mt-8">
+      <!-- Bloque de calculadora -->
+      <div class=" bg-blue-100 p-8 shadow-lg mx-auto rounded-lg flex-1 max-w-md">
+        <!-- Tasas de Compra y Venta -->
+        <div class="flex justify-between mb-8">
+          <div class="bg-blue-500 text-white font-bold py-2 px-4 rounded-xl shadow">Compra:
+            S/ {{ changeType.tipoCompra }}
+          </div>
+          <div class="bg-blue-500 text-white font-bold py-2 px-4 rounded-xl shadow">Venta: S/ {{ changeType.tipoVenta }}
+          </div>
+        </div>
+        <!-- Cajas de Divisas con Icono de Intercambio -->
+        <div class="space-y-4 mb-8">
+          <div class="flex items-center justify-between bg-white p-4 rounded-xl">
+            <span class="text-gray-800">Envías <span class="text-xs text-yellow-700">{{ changeValue == 'tipoCompra' ? 'soles' : 'dólares' }}</span> </span>
+            <img *ngIf="changeValue == 'tipoVenta'"
+                 src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                 alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
+            <img *ngIf="changeValue == 'tipoCompra'"
+                 src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
+                 class="inline-block w-4 h-3 mr-1">
+
+            <span class="font-bold text-gray-800">{{ changeValue == 'tipoCompra' ? ' S/' : '$' }}</span>
+            <input type="text" [(ngModel)]="cantidadEnvio" name="cantidadEnvio"
+                   required pattern="^(0*[1-9]\d*(\.\d{0,3})?|1*\.\d{1,3}[1-9])$"
+                   #cantidadInput="ngModel"
+                   class="w-32 text-right px-4 py-2 border rounded shadow-sm focus:outline-none" placeholder="Cantidad">
+          </div>
+          <div *ngIf="cantidadInput.errors && (cantidadInput.dirty || cantidadInput.touched)" class="p-2 text-red-500 text-xs italic">
+            <p *ngIf="cantidadInput.errors['pattern']">Valor debe ser mayor a 0 y hasta tres decimales.</p>
+          </div>
+
+
+
+          <div class="flex justify-center my-2">
+            <button (click)="toggleCurrency()"
+                    class="bg-blue-500 hover:from-blue-800 hover:to-blue-600 text-white p-2 rounded-full shadow-lg transform hover:scale-110 transition-transform">
+              <i class="fas fa-sync-alt text-xl"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between bg-white p-4 rounded-xl">
+            <span class="text-gray-800">Recibes <span
+              class="text-xs text-yellow-700">{{ changeValue == 'tipoCompra' ? 'dólares' : 'soles' }}</span></span>
+            <img *ngIf="changeValue == 'tipoCompra'"
+                 src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                 alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
+            <img *ngIf="changeValue == 'tipoVenta'"
+                 src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
+                 class="inline-block w-4 h-3 mr-1">
+
+            <span class="font-bold text-gray-800">{{ changeValue == 'tipoVenta' ? 'S/' : '$' }}</span>
+            <input
+              [value]="changeValue == 'tipoCompra' ? (+cantidadEnvio / +changeType.tipoCompra).toFixed(3) : (+cantidadEnvio * +changeType.tipoVenta).toFixed(3)"
+              readonly class="w-32 text-right px-4 py-2 border rounded shadow-sm focus:outline-none"
+              placeholder="Cantidad">
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Datos Bancarios -->
+      <!-- Formulario de Datos Bancarios -->
+      <div class="bg-white p-8 rounded-lg mx-auto shadow-lg flex-1 max-w-md">
+        <h2 class="text-lg font-semibold mb-4">Datos Bancarios</h2>
+        <form>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Tu banco</label>
+            <div class="flex justify-between items-center">
+              <span class="text-xs "> Banco donde recibirás tu dinero</span>
+              <button type="button" (click)="openBankDialog()"
+                      class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded cursor-pointer">
+                Elige el banco
+              </button>
+            </div>
+
+            <div *ngIf="selectedBank" class="mt-2 flex items-center">
+              <img [src]="selectedBank.image" [alt]="selectedBank.name" class="w-8 h-8 mr-2">
+              <span class="text-gray-700">{{ selectedBank.name }}</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="accountNumber" class="block text-gray-700 text-sm font-bold mb-2">
+              Número de cuenta {{ selectedBank?.cci ? 'Interbancario (CCI)' : 'Bancario' }}
+            </label>
+            <span class="text-xs">
+            Ingresa tu número de {{ selectedBank?.cci ? 'cuenta interbancaria' : 'cuenta bancaria' }}
+            </span>
+            <input type="text" id="accountNumber" [(ngModel)]="accountNumber" name="accountNumber"
+                   [disabled]="!selectedBank"
+                   required [pattern]="selectedBank?.cci ? '\\d*' : '\\d*'"
+                   [minlength]="selectedBank ? selectedBank.num_chars_min : null"
+                   [maxlength]="selectedBank ? selectedBank.num_chars_max : null"
+                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                   #accNum="ngModel" (blur)="accNum.control.updateValueAndValidity()">
+
+            <div *ngIf="accNum.errors && (accNum.dirty || accNum.touched)" class="text-red-500 text-xs italic">
+              <p *ngIf="accNum.errors['required']">Este campo es obligatorio.</p>
+              <p *ngIf="accNum.errors['pattern']">Solo números son permitidos.</p>
+              <p *ngIf="accNum.errors['minlength'] || accNum.errors['maxlength']">
+                El número de cuenta debe tener entre {{ selectedBank ? selectedBank.num_chars_min : '' }}
+                y {{ selectedBank ? selectedBank.num_chars_max : 'N/A' }} dígitos.
+              </p>
+            </div>
+
+          </div>
+
+
+
+          <div class="mb-6">
+            <label for="accountType" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Cuenta</label>
+            <span class="text-xs "> Tipo de cuenta que tienes </span>
+            <select id="accountType" [(ngModel)]="accountType" name="accountType" [class.disabled-input]="!selectedBank"
+                    [disabled]="!selectedBank"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              <option value="ahorro">Ahorro</option>
+              <option value="corriente">Corriente</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+    </div>
+    <hr class="mt-8">
+    <!-- Botón para continuar al siguiente paso -->
+    <div class="flex justify-center mt-8">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="submitForm()">
+        Continuar
+      </button>
+    </div>
+  </div>
+
+
+  <div *ngIf="step === 2" class="mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="bg-white p-8 shadow-lg rounded-lg max-w-2xl mx-auto">
+      <h2 class="text-2xl font-semibold mb-4 text-blue-500">Transfiere a FastChange</h2>
+      <p class="mb-4">Transfiere <span class="font-bold">{{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}</span> desde tu banca por internet a la siguiente
+        cuenta:</p>
+      <div *ngIf="selectedFastChangeAccount" class="grid md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Nombre de la cuenta</label>
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.accountName">
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Tipo de cuenta y moneda</label>
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.accountInfo">
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Banco</label>
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.bank">
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">Número de cuenta</label>
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.accountNumber">
+        </div>
+      </div>
+      <p class="mb-4 text-red-400">Recuerda que tienes 30 minutos para realizar la transferencia </p>
+
+    </div>
+    <div class="bg-white p-8 shadow-lg rounded-lg flex-1 max-w-md mx-auto mt-6">
+      <h2 class="text-2xl font-semibold mb-4 text-blue-500">Resumen de la operación</h2>
+      <div class="space-y-4">
+        <p><span class="font-bold text-gray-800">N° ID Transacción:</span>  {{ this.responseTransaction._id }}</p>
+        <p><span
+          class="font-bold text-gray-800">Envías a FastChange:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}
+        </p>
+        <p><span
+          class="font-bold text-gray-800">Cantidad que recibirás:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? '$' : 'S/' }} {{ this.responseTransaction.cantidadRecepcion }}
+        </p>
+        <p><span
+          class="font-bold text-gray-800">Número de cuenta donde recibirás:</span> {{ this.responseTransaction.numeroCuentaInterbancario }}
+        </p>
+      </div>
+    </div>
+    <div class="flex justify-center gap-4 mt-8">
+      <button
+        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+        (click)="cancelProcess()">Cancelar operación
+      </button>
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+        (click)="setStep(3)">Ya hice mi transferencia
+      </button>
+    </div>
+  </div>
+
+
+  <div *ngIf="step === 3" class="mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    <div class="flex justify-start mb-4">
+      <button class="text-blue-500 hover:text-blue-700 transition duration-150 ease-in-out"
+              (click)="setStep(2)">
+        <i class="fas fa-arrow-left"></i> Volver a paso anterior
+      </button>
+    </div>
+    <div class="flex flex-col md:flex-row gap-8 items-start justify-around">
+      <!-- Bloque de confirmación de transferencia -->
+      <div class="bg-white p-8 shadow-lg rounded-lg flex-1 max-w-md">
+        <h2 class="text-2xl font-semibold mb-4 text-blue-500">Confirma tu transferencia</h2>
+        <p class="mb-4">Ingresa el número de operación de tu banco correspondiente a tu transferencia:</p>
+        <input type="text" [(ngModel)]="numeroOperacion" placeholder="Número de operación"
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-6"
+               maxlength="16" pattern="^[0-9]*$">
+
+        <!-- Botones -->
+        <div class="flex justify-between">
+          <button
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+            (click)="cancelProcess()">Cancelar operación
+          </button>
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+            (click)="confirmPayment()">Confirmar pago
+          </button>
+        </div>
+      </div>
+
+      <!-- Bloque de resumen de operación -->
+      <div class="bg-white p-8 shadow-lg rounded-lg flex-1 max-w-md">
+        <h2 class="text-2xl font-semibold mb-4 text-blue-500">Resumen de la operación</h2>
+        <div class="space-y-4">
+          <p><span class="font-bold text-gray-800">Envías a FastChange:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ responseTransaction.cantidadEnvio }}</p>
+          <p><span class="font-bold text-gray-800">Recibirás:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? '$' : 'S/' }} {{ responseTransaction.cantidadRecepcion }}</p>
+          <p><span class="font-bold text-gray-800">Tipo de cambio:</span> {{ responseTransaction.tipoCambio }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

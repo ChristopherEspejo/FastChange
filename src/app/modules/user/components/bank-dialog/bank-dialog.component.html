@@ -1,0 +1,11 @@
+<!-- bank-dialog.component.html -->
+<h2 class="text-lg font-semibold text-center p-5 mb-4">¿En qué banco deseas recibir tu dinero?</h2>
+<ul class="max-h-96 overflow-auto px-4">
+  <li *ngFor="let bank of data.banks" (click)="selectBank(bank)" class="flex items-center p-2 hover:bg-gray-100 cursor-pointer rounded">
+    <img [src]="bank.image" [alt]="bank.name" class="w-5 h-5 mr-2">
+    {{ bank.name }}
+  </li>
+</ul>
+
+
+

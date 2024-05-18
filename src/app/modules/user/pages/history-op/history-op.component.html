@@ -1,0 +1,100 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-3xl font-semibold text-gray-800 mb-8">Historial</h1>
+  <div class=" flex flex-col md:flex-row justify-between mb-6">
+
+    <div class="flex justify-between items-center mb-4 relative">
+      <!-- Wrapper del Select con ícono -->
+      <div class="flex border border-gray-300 bg-white rounded-md shadow-sm w-full md:max-w-sm">
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterByStatus()"
+                class="form-select block flex-1 appearance-none py-2 pl-3 pr-10 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500">
+          <option value="">Todos los estados</option>
+          <option value="espera">Espera</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="culminado">Culminado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <!-- Ícono de flecha hacia abajo dentro del wrapper pero fuera del select -->
+        <i class="fas fa-exchange-alt absolute right-2 pointer-events-none text-gray-500"
+           style="top: 50%; transform: translateY(-50%);"></i>
+      </div>
+    </div>
+
+
+    <div>
+      <app-date-range-selector (dateRangeSelected)="handleDateRange($event)"></app-date-range-selector>
+    </div>
+
+  </div>
+  <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let transaction of transactions"
+         class="bg-gradient-to-tr from-gray-50 to-white rounded-xl text-black shadow-sm hover:shadow-md transition duration-300 ease-in-out">
+      <div class="p-8">
+        <div class="flex  justify-between items-center">
+          <span
+            class="text-lg font-semibold">{{ transaction.tipoOperacion === 'tipoCompra' ? 'Compra' : 'Venta' }}</span>
+          <span [ngClass]="{
+            'bg-blue-500': transaction.estado === 'espera',
+            'bg-yellow-500': transaction.estado === 'pendiente',
+            'bg-green-500': transaction.estado === 'culminado',
+            'bg-red-500': transaction.estado === 'cancelado'
+          }" class="text-xs font-bold py-1 px-3 rounded-full text-white">
+            {{ transaction.estado | titlecase }}
+          </span>
+        </div>
+        <div class="mt-4">
+          <p class="font-light">ID Transacción: {{ transaction._id }}</p>
+          <p>Enviado:
+            <img *ngIf="transaction.tipoOperacion === 'tipoCompra'"
+                 src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
+                 class="inline-block w-4 h-3 mr-1">
+            <img *ngIf="transaction.tipoOperacion === 'tipoVenta'"
+                 src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                 alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
+            {{ transaction.tipoOperacion === 'tipoCompra' ? 'S/' : '$' }}{{ transaction.cantidadEnvio }}
+          </p>
+          <p>Recibirás/Recibido:
+            <img *ngIf="transaction.tipoOperacion === 'tipoCompra'"
+                 src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
+                 alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
+            <img *ngIf="transaction.tipoOperacion === 'tipoVenta'"
+                 src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
+                 class="inline-block w-4 h-3 mr-1">
+            {{ transaction.tipoOperacion === 'tipoCompra' ? '$' : 'S/' }}{{ transaction.cantidadRecepcion }}
+          </p>
+
+          <button (click)="transaction.showDetails = !transaction.showDetails"
+                  class="mt-2 text-sm text-blue-500 hover:text-blue-700">
+            Más detalles <i
+            [ngClass]="{'fa-chevron-down': !transaction.showDetails, 'fa-chevron-up': transaction.showDetails}"
+            class="fas"></i>
+          </button>
+        </div>
+        <!-- Add payment confirmation inputs for 'espera' state -->
+
+        <div *ngIf="transaction.showDetails" class="mt-2 bg-gray-200 p-3 rounded shadow-inner">
+          <p>Cuenta Destino: {{ transaction.numeroCuentaInterbancario }}</p>
+          <p>Banco Destino: {{ transaction.bancoDestino }}</p>
+          <p *ngIf="transaction.numeroOperacion">N° Operación de Pago: {{ transaction.numeroOperacion }}</p>
+          <p>Fecha de Creación: {{ transaction.createdAt | date: 'short' }}</p>
+          <p *ngIf="transaction.comentario">Comentario: {{ transaction.comentario }}</p>
+          <div *ngIf="transaction.imagen" class="mt-2">
+            <button (click)="openImageDialog(transaction.imagen)"
+                    class="align-middle font-bold text-center uppercase text-sm py-2 px-4 rounded-lg bg-white text-black shadow-md hover:bg-green-600 hover:text-white">
+              Ver Recibo
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="transaction.estado === 'espera'" class="mt-2">
+          <input type="text" [(ngModel)]="transaction.numeroOperacionTemp"
+                 class="form-input  outline-blue-100 rounded-md shadow-sm mt-1 block w-full"
+                 placeholder="Número de operación" maxlength="16">
+          <button (click)="confirmPayment(transaction)"
+                  class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Confirmar pago
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

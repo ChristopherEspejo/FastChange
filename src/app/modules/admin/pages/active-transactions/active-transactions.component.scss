@@ -1,0 +1,13 @@
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  border-color: transparent transparent transparent #3498db; /* Color azul solo en la parte superior */
+  transition: opacity 0.3s ease-in-out; /* Suaviza la desaparición */
+}

@@ -1,0 +1,68 @@
+<div class="flex flex-col md:flex-row min-h-screen">
+  <!-- Botón de Toggle para Sidebar en dispositivos pequeños -->
+  <button class="md:hidden p-4 focus:outline-none focus:bg-blue-600 bg-blue-600 " (click)="toggleMenu()">
+    <i class="fas fa-bars text-white"></i>
+  </button>
+  <!-- Sidebar -->
+
+
+  <nav [ngClass]="{'hidden': !isMenuOpen, 'md:block': true}" class="bg-blue-600 text-white w-full md:w-1/5">
+    <div class="text-center py-4 md:py-10">
+      <div  class="flex items-center text-center mx-auto  w-40 h-10"> <!-- Reducir la altura aquí -->
+        <img src="./assets/svg/Cambialo.svg" class="w-full h-auto  filter" alt="Logo">
+      </div>
+    </div>
+    <div class="px-4">
+      <ul class="space-y-2">
+        <li>
+          <a [routerLink]="['dashboard']" class="flex items-center gap-2 py-2 px-4 hover:bg-blue-700 rounded-lg transition duration-150 ease-in-out">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['active-transactions']" class="flex items-center gap-2 py-2 px-4 hover:bg-blue-700 rounded-lg transition duration-150 ease-in-out">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transacciones Activas</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['history']" class="flex items-center gap-2 py-2 px-4 hover:bg-blue-700 rounded-lg transition duration-150 ease-in-out">
+            <i class="fas fa-history"></i>
+            <span>Historial</span>
+          </a>
+        </li>
+<!--        <li>-->
+<!--          <a [routerLink]="['configuration']" class="flex items-center gap-2 py-2 px-4 hover:bg-blue-700 rounded-lg transition duration-150 ease-in-out">-->
+<!--            <i class="fas fa-cog"></i>-->
+<!--            <span>Configuraciones</span>-->
+<!--          </a>-->
+<!--        </li>-->
+        <!-- Separador visual -->
+        <li class="border-t border-blue-700 my-2"></li>
+        <!-- Opción de Cerrar Sesión -->
+        <li>
+          <a (click)="logout()" class="flex items-center gap-2 py-2 px-4 hover:bg-red-500 rounded-lg transition duration-150 ease-in-out cursor-pointer">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar sesión</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-2 bg-gray-100">
+
+
+    <!-- Otros componentes -->
+
+    <!-- Contenido de la aplicación -->
+
+
+    <router-outlet></router-outlet>
+  </main>
+</div>
+

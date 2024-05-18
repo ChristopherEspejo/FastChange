@@ -1,0 +1,22 @@
+<!-- date-range-selector.component.html -->
+<div class="relative">
+  <div class="flex items-center border border-gray-300 rounded-md shadow-sm w-full sm:w-64">
+    <i class="fas fa-calendar-alt px-3 text-gray-500"></i>
+    <input type="text" class="flex-1 py-2 px-4 rounded-md outline-none cursor-pointer"
+           [ngModel]="updateInputPlaceholder()" (click)="toggleCalendar()" readonly>
+  </div>
+  <div *ngIf="showCalendar" class="absolute top-full mt-2 bg-white border border-gray-300 rounded-md shadow-md w-full sm:w-64 z-10">
+    <!-- Calendar Date Range Picker -->
+    <div class="p-2">
+      <label for="startDate">Inicio:</label>
+      <input type="date" id="startDate" class="border border-gray-300 rounded-md px-2 py-1 w-full"
+             [(ngModel)]="startDate" (change)="onDateChange()" (ngModelChange)="endDateInput.focus()">
+    </div>
+    <div class="p-2">
+      <label for="endDate">Fin:</label>
+      <input type="date" id="endDate" class="border border-gray-300 rounded-md px-2 py-1 w-full"
+             [(ngModel)]="endDate" #endDateInput (change)="onDateChange()">
+    </div>
+  </div>
+</div>
+

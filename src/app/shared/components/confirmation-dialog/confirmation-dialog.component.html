@@ -1,0 +1,16 @@
+<!-- confirmation-dialog.component.html -->
+<div class="flex flex-col w-full max-w-lg p-6 bg-white rounded-lg shadow-md">
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold text-gray-800">Confirmar Acción</h2>
+    <p class="text-sm text-gray-600 mt-2">¿Estás seguro de que quieres realizar esta acción?</p>
+  </div>
+
+  <div class="flex justify-between mt-6">
+    <button [mat-dialog-close]="false" class="transition duration-150 ease-in-out bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded">
+      Cancelar
+    </button>
+    <button [mat-dialog-close]="true" class="transition duration-150 ease-in-out bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+      Confirmar
+    </button>
+  </div>
+</div>
