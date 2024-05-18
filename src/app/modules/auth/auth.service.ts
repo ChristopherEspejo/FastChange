@@ -8,7 +8,7 @@ import {UserService} from "../user/user.service";
   providedIn: 'root'
 })
 export class AuthService {
-  url = 'https://fastchange.up.railway.app/api';
+  url = 'https://fastchange.up.railway.app/';
 
   constructor(private httpClient: HttpClient,
               private userService: UserService) {
