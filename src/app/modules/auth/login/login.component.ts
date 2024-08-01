@@ -88,24 +88,40 @@ export class LoginComponent {
       });
   }
 
-  verifyAccess(idToken: string){
+  verifyAccess(idToken: string) {
     this.authService.verifyLogin(idToken).subscribe({
-      next: (data:any) => {
-        if(data.user.rol === 'admin'){
-          this.router.navigate(['/admin']); // Usa esto para redirigir
-        }else if(data.user.rol === 'usuario'){
-          this.router.navigate(['/user']); // Usa esto para redirigir
-
+      next: (data: any) => {
+        // Este bloque solo se ejecutará si la solicitud es exitosa y no hay error
+        if (data.user) {
+          // Usuario encontrado
+          if (data.user.rol === 'admin') {
+            this.router.navigate(['/admin']); // Redirige a la página de admin
+          } else if (data.user.rol === 'usuario') {
+            this.router.navigate(['/user']); // Redirige a la página de usuario
+          }
+        } else {
+          // Si por alguna razón data.user no está presente
+          this.toast.error('Error inesperado. Por favor, intente nuevamente más tarde.', 'Error');
         }
-
-
       },
-      error: ({error}) => {
-        console.log(error)
-        this.toast.error(error.message, 'Error');
+      error: ({ error }) => {
+        if (error.exists === false) {
+          // Usuario no encontrado
+          this.toast.warning('Usuario no encontrado. Por favor, regístrate.', 'Advertencia');
+          this.router.navigate(['/auth/register']);// Redirige a la página de registro
+        } else if (error.exists === undefined) {
+          // Error 500 u otro error inesperado
+          this.toast.error('Error en el servidor. Por favor, intente nuevamente más tarde.', 'Error');
+        } else {
+          // Otros tipos de errores
+          this.toast.error(error.message, 'Error');
+        }
+        console.log(error);
       }
     });
   }
+  
+
 
 
   logout() {

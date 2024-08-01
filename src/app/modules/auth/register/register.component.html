@@ -3,75 +3,80 @@
     <div *ngIf="!flagCreateAccount">
       <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
         Registra tu cuenta
-
-
       </h2>
     </div>
 
-      <div *ngIf="!flagCreateAccount">
+    <div *ngIf="!flagCreateAccount">
+      <div>
+        <button (click)="registerWithGoogle()" type="button"
+                class="group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-600 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <i class="fab fa-google mr-2"></i>
+          Regístrate con Google
+        </button>
+      </div>
+
+      <div>
+        <button (click)="registerWithApple()" type="button"
+                class=" mt-4 group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <i class="fab fa-apple mr-2"></i>
+          Regístrate con Apple
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="flagCreateAccount" class="mt-8">
+      <h3 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Continúa con tu registro</h3>
+      <form [formGroup]="registerForm" (ngSubmit)="sendRegister()" class="space-y-6 mt-4">
         <div>
-          <button (click)="registerWithGoogle()" type="button"
-                  class="group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-gray-600 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <i class="fab fa-google mr-2"></i>
-            Registrate con Google
-
-          </button>
+          <label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
+          <input type="text" id="nombre" formControlName="nombre"
+                 class="pl-4 mt-1 focus:outline-none focus:ring-1 focus:border-indigo-500  block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-12"
+                 required>
+          <div *ngIf="registerForm.controls['nombre'].invalid && registerForm.controls['nombre'].touched" class="text-red-500 text-sm">
+            Nombres solo puede contener letras y puede tener hasta 30 caracteres.
+          </div>
         </div>
-
-        <!-- Botón de Iniciar sesión con Apple -->
         <div>
-          <button (click)="registerWithApple()" type="button"
-                  class=" mt-4 group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            <i class="fab fa-apple mr-2"></i>
-            Registrate con Apple
-          </button>
+          <label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
+          <input type="text" id="apellido" formControlName="apellido"
+                 class="pl-4 mt-1 focus:outline-none focus:ring-1 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-12"
+                 required>
+          <div *ngIf="registerForm.controls['apellido'].invalid && registerForm.controls['apellido'].touched" class="text-red-500 text-sm">
+            Apellidos solo puede contener letras y puede tener hasta 30 caracteres.
+          </div>
         </div>
-      </div>
-
-      <div *ngIf="flagCreateAccount" class="mt-8">
-        <h3 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Continua con tu registro</h3>
-        <form [formGroup]="registerForm" (ngSubmit)="sendRegister()" class="space-y-6 mt-4">
-          <div>
-            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombres</label>
-            <input type="text" id="nombre" formControlName="nombre"
-                   class=" pl-4 mt-1 focus:outline-none focus:ring-1 focus:border-indigo-500  block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-12"
-                   required>
+        <div>
+          <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+          <input type="text" id="dni" formControlName="dni"
+                 class="pl-4 mt-1  focus:outline-none focus:ring-1 focus:border-indigo-500 block w-full  shadow-sm sm:text-sm border-gray-300 rounded-md h-12"
+                 required>
+          <div *ngIf="registerForm.controls['dni'].invalid && registerForm.controls['dni'].touched" class="text-red-500 text-sm">
+            DNI solo puede contener números y debe tener entre 8 y 11 dígitos.
           </div>
-          <div>
-            <label for="apellido" class="block text-sm font-medium text-gray-700">Apellidos</label>
-            <input type="text" id="apellido" formControlName="apellido"
-                   class="pl-4 mt-1 focus:outline-none focus:ring-1 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md h-12"
-                   required>
-          </div>
-          <div>
-            <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
-            <input type="text" id="dni" formControlName="dni"
-                   class="pl-4 mt-1  focus:outline-none focus:ring-1 focus:border-indigo-500 block w-full  shadow-sm sm:text-sm border-gray-300 rounded-md h-12"
-                   required>
-          </div>
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico (Opcional)</label>
-            <input type="email" id="email" formControlName="email"
-                   class="pl-4 mt-1  focus:outline-none focus:ring-1 focus:border-indigo-500 block w-full  shadow-sm sm:text-sm border-gray-300 rounded-md h-12">
-          </div>
-          <button type="submit"
-                  class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Registrar
-          </button>
-        </form>
-      </div>
-
-
-      <div class="mt-4 flex justify-between">
-        <div class="text-sm text-center">
-          ¿Ya tienes una cuenta? <a [routerLink]="['../login']"
-                                    class="font-medium text-indigo-600 hover:text-indigo-500">Ingresa</a>
         </div>
-        <div class="text-sm text-center">
-          Volver a <a [routerLink]="['/']" class="font-medium text-indigo-600 hover:text-indigo-500">Inicio</a>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico (Opcional)</label>
+          <input type="email" id="email" formControlName="email"
+                 class="pl-4 mt-1  focus:outline-none focus:ring-1 focus:border-indigo-500 block w-full  shadow-sm sm:text-sm border-gray-300 rounded-md h-12">
+          <div class="text-sm text-gray-500">
+            El correo electrónico es usado para las notificaciones de confirmación de operaciones.
+          </div>
         </div>
+        <button type="submit"
+                class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Registrar
+        </button>
+      </form>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <div class="text-sm text-center">
+        ¿Ya tienes una cuenta? <a [routerLink]="['../login']"
+                                  class="font-medium text-indigo-600 hover:text-indigo-500">Ingresa</a>
       </div>
-
-
+      <div class="text-sm text-center">
+        Volver a <a [routerLink]="['/']" class="font-medium text-indigo-600 hover:text-indigo-500">Inicio</a>
+      </div>
+    </div>
   </div>
 </div>
