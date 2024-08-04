@@ -1,12 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {UserService} from "../../user.service";
-import {ToastrService} from "ngx-toastr";
-import {MatDialog} from "@angular/material/dialog";
-import {
-  ConfirmationDialogComponent
-} from "../../../../shared/components/confirmation-dialog/confirmation-dialog.component";
-import {ImageDialogComponent} from "../../../../shared/components/image-dialog/image-dialog.component";
-import {GlobalService} from "../../../../shared/services/global.service";
+import { Component, OnInit } from '@angular/core';
+import { UserService } from "../../user.service";
+import { ToastrService } from "ngx-toastr";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmationDialogComponent } from "../../../../shared/components/confirmation-dialog/confirmation-dialog.component";
+import { ImageDialogComponent } from "../../../../shared/components/image-dialog/image-dialog.component";
+import { GlobalService } from "../../../../shared/services/global.service";
 
 @Component({
   selector: 'app-history-op',
@@ -19,6 +17,7 @@ export class HistoryOpComponent implements OnInit {
   selectedStatus = '';
   startDate: string | null = null;
   endDate: string | null = null;
+  loading: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -46,14 +45,18 @@ export class HistoryOpComponent implements OnInit {
   }
 
   loadTransactions() {
+    this.loading = true;
     this.userService.getAllTransactions().subscribe({
       next: (transactions: any) => {
         this.allTransactions = transactions;
-        this.applyFilters(); // Apply filters once transactions are loaded
+        this.applyFilters(); // Aplica los filtros después de recargar las transacciones
       },
       error: (error: any) => {
         console.error('Error al obtener las transacciones', error);
         this.toastr.error('Error al cargar transacciones');
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
   }

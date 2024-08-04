@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -20,21 +20,16 @@ export class AdminService {
   }
 
   getChangeType(): Observable<any> {
-    // Usando getHeaders para incluir el token de autenticación
     return this.http.get<any>(`${this.apiUrl}/changetype/change-type`, { headers: this.getHeaders() });
   }
 
   getAllTransactions(): Observable<any> {
-    // Corrección de la URL para obtener todas las transacciones
     return this.http.get<any>(`${this.apiUrl.replace('/changetype/change-type', '')}/transactions`, { headers: this.getHeaders() });
   }
 
   updateChangeType(changeTypeData: any): Observable<any> {
-    // Asume que tienes un endpoint para actualizar los datos
-    // y que changeTypeData contiene la estructura adecuada para tu backend
     return this.http.patch<any>(`${this.apiUrl}/changetype/change-type`, changeTypeData, { headers: this.getHeaders() });
   }
-
 
   cancelTransaction(id: string): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/transactions/${id}/cancel`, {}, { headers: this.getHeaders() });
@@ -67,4 +62,14 @@ export class AdminService {
       });
     });
   }
+
+  // Nuevo método para descargar reporte de transacciones
+  downloadTransactionReport(dateRange: 'today' | 'week'): Observable<Blob> {
+    const headers = this.getHeaders();
+    return this.http.get(`${this.apiUrl}/transactions/download-report?dateRange=${dateRange}`, {
+      headers,
+      responseType: 'blob'  // Asegúrate de que el tipo de respuesta sea 'blob'
+    });
+  }
+  
 }

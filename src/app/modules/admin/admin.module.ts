@@ -11,12 +11,14 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatDivider} from "@angular/material/divider";
 import {MatIcon} from "@angular/material/icon";
 import {DateRangeSelectorComponent} from "../../shared/components/date-range-selector/date-range-selector.component";
+import { PdfReportComponent } from './components/pdf-report/pdf-report.component';
 
 
 
 @NgModule({
   declarations: [AdminComponent, DashboardComponent, TransactionHistoryComponent,ActiveTransactionsComponent],
     imports: [
+        PdfReportComponent,
         CommonModule,
         RouterOutlet,
         AdminRoutingModule,

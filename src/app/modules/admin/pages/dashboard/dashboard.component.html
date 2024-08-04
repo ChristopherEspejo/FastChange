@@ -1,34 +1,39 @@
-<div class="container mx-auto px-4 py-6 relative">
-  <div class="max-w-md bg-blue-100 p-6 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold text-blank mb-6">Tipo de Cambio Actual</h2>
+<div class="container mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Tarjeta de Tipo de Cambio -->
+  <div class="max-w-md bg-blue-100 p-6 rounded-lg shadow-lg relative">
+    <div *ngIf="isLoading" class="absolute inset-0 bg-gray-100 bg-opacity-75 flex justify-center items-center z-10">
+      <div class="spinner animate-spin inline-block w-12 h-12 border-4 rounded-full border-t-4 border-t-blue-500" role="status"></div>
+    </div>
+    <h2 class="text-2xl font-bold text-black mb-6">Tipo de Cambio Actual</h2>
     <div class="mb-6">
       <label for="compra" class="block text-gray-700 text-sm font-bold mb-2">Compra:</label>
       <input type="number" id="compra" [(ngModel)]="changeType.tipoCompra" name="compra"
              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
              step="0.001" required
-             pattern="^\d*(\.\d{0,3})?$" #compra="ngModel" />
+             pattern="^\d*(\.\d{0,3})?$" #compra="ngModel" [disabled]="isLoading" />
       <div *ngIf="compra.errors && (compra.dirty || compra.touched)" class="text-red-500 text-xs italic">
         <p *ngIf="compra.errors['required']">Este campo es obligatorio.</p>
         <p *ngIf="compra.errors['pattern']">Debe ser un número válido con hasta tres decimales.</p>
       </div>
     </div>
-
     <div class="mb-6">
       <label for="venta" class="block text-gray-700 text-sm font-bold mb-2">Venta:</label>
       <input type="number" id="venta" [(ngModel)]="changeType.tipoVenta" name="venta"
              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
              step="0.001" required
-             pattern="^\d*(\.\d{0,3})?$" #venta="ngModel" />
+             pattern="^\d*(\.\d{0,3})?$" #venta="ngModel" [disabled]="isLoading" />
       <div *ngIf="venta.errors && (venta.dirty || venta.touched)" class="text-red-500 text-xs italic">
         <p *ngIf="venta.errors['required']">Este campo es obligatorio.</p>
         <p *ngIf="venta.errors['pattern']">Debe ser un número válido con hasta tres decimales.</p>
       </div>
     </div>
-
     <button (click)="openConfirmationDialog()"
-            [disabled]="compra.invalid || venta.invalid"
+            [disabled]="compra.invalid || venta.invalid || isLoading"
             class="bg-white hover:bg-gray-100 text-black font-bold py-2 px-4 rounded transition duration-150 ease-in-out">
       Actualizar Tipo de Cambio
     </button>
   </div>
+
+  <!-- Tarjeta de Reportes PDF -->
+  <app-pdf-report></app-pdf-report>
 </div>

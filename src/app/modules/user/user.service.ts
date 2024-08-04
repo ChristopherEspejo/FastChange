@@ -54,6 +54,32 @@ export class UserService {
       })
     );
   }
+  updateUser(data: { nombre: string, apellido: string, dni: string, email?: string }): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/users/update`, data, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
+  // Método para obtener todos los CompanyBanks
+  getAllCompanyBanks(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/banks/companyBanks`, { headers: this.getHeaders() }).pipe(
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Método para obtener todos los Banks
+  getAllBanks(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/banks/banks`, { headers: this.getHeaders() }).pipe(
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
 
 
 

@@ -1,7 +1,17 @@
-<div class="container mx-auto px-4 py-6">
-  <h1 class="text-3xl font-semibold text-gray-800 mb-8">Historial</h1>
-  <div class="flex flex-col md:flex-row justify-between mb-6">
+<div class="container mx-auto px-4 py-6 relative">
+  <!-- Overlay con spinner cuando isLoading es true -->
+  <div *ngIf="isLoading" class="absolute inset-0 bg-gray-100 bg-opacity-75 flex justify-center items-center z-20">
+    <div class="spinner animate-spin inline-block w-12 h-12 border-4 rounded-full border-t-4 border-t-blue-500" role="status"></div>
+  </div>
 
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-semibold text-gray-800">Historial</h1>
+    <button (click)="refreshTransactions()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out">
+      <i class="fas fa-sync-alt"></i> Actualizar
+    </button>
+  </div>
+
+  <div class="flex flex-col md:flex-row justify-between mb-6">
     <div class="flex justify-between items-center mb-4 relative">
       <!-- Wrapper del Select con ícono -->
       <div class="flex border border-gray-300 bg-white rounded-md shadow-sm w-full md:max-w-sm">
@@ -19,12 +29,19 @@
       </div>
     </div>
 
-
     <div>
       <app-date-range-selector (dateRangeSelected)="handleDateRange($event)"></app-date-range-selector>
     </div>
   </div>
-  <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+  <!-- Mensaje cuando no hay resultados -->
+  <div *ngIf="!isLoading && transactions.length === 0" class="text-center text-gray-600 mt-8">
+    <i class="fas fa-folder-open text-5xl mb-4"></i>
+    <p class="text-lg">No se encontraron resultados</p>
+  </div>
+
+  <!-- Grid de transacciones -->
+  <div *ngIf="!isLoading && transactions.length > 0" class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div *ngFor="let transaction of transactions" class="bg-gradient-to-tr from-gray-50 to-white rounded-xl text-black shadow-sm hover:shadow-md transition duration-300 ease-in-out">
       <div class="p-8">
         <div class="flex justify-between items-center">
@@ -39,7 +56,7 @@
           </span>
         </div>
         <div class="mt-4">
-          <p class="font-light">ID Transacción: {{ transaction._id }}</p>
+          <p class="font-light">ID Transacción: {{ transaction.idTransaction }}</p>
           <p>Enviado:
             <img *ngIf="transaction.tipoOperacion === 'tipoCompra'" src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú" class="inline-block w-4 h-3 mr-1">
             <img *ngIf="transaction.tipoOperacion === 'tipoVenta'" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
@@ -55,17 +72,47 @@
           </button>
         </div>
         <div *ngIf="transaction.showDetails" class="mt-2 bg-green-100 p-3 rounded shadow-inner">
-          <p>Cuenta Destino: {{ transaction.numeroCuentaInterbancario }}</p>
-          <p>Banco Destino: {{ transaction.bancoDestino }}</p>
-          <p *ngIf="transaction.numeroOperacion">N° Operación de Pago: {{ transaction.numeroOperacion }}</p>
-          <p>Fecha de Creación: {{ transaction.createdAt | date: 'short' }}</p>
-          <p *ngIf="transaction.comentario">Comentario: {{ transaction.comentario }}</p>
-          <div *ngIf="transaction.imagen" class="mt-2">
-            <button (click)="openImageDialog(transaction.imagen)"
-                    class="align-middle font-bold text-center uppercase text-sm py-2 px-4 rounded-lg bg-white text-black shadow-md hover:bg-green-600 hover:text-white">
-              Ver Recibo
-            </button>
-          </div>
+          <table class="table-auto w-full text-left">
+            <tbody>
+              <tr>
+                <td class="font-bold pr-2 py-1">Nombre del usuario:</td>
+                <td>{{ transaction.usuarioId.nombre }} {{ transaction.usuarioId.apellido }}</td>
+              </tr>
+              <tr>
+                <td class="font-bold pr-2 py-1">DNI del usuario:</td>
+                <td>{{ transaction.usuarioId.dni }}</td>
+              </tr>
+              <tr>
+                <td class="font-bold pr-2 py-1">Cuenta Destino:</td>
+                <td>{{ transaction.numeroCuentaInterbancario }}</td>
+              </tr>
+              <tr>
+                <td class="font-bold pr-2 py-1">Banco Destino:</td>
+                <td>{{ transaction.bancoDestino }}</td>
+              </tr>
+              <tr *ngIf="transaction.numeroOperacion">
+                <td class="font-bold pr-2 py-1">N° Operación de Pago:</td>
+                <td>{{ transaction.numeroOperacion }}</td>
+              </tr>
+              <tr>
+                <td class="font-bold pr-2 py-1">Fecha de Creación:</td>
+                <td>{{ transaction.createdAt | date: 'short' }}</td>
+              </tr>
+              <tr *ngIf="transaction.comentario">
+                <td class="font-bold pr-2 py-1">Comentario:</td>
+                <td>{{ transaction.comentario }}</td>
+              </tr>
+              <tr *ngIf="transaction.imagen">
+                <td class="font-bold pr-2 py-1">Recibo:</td>
+                <td>
+                  <button (click)="openImageDialog(transaction.imagen)"
+                          class="align-middle font-bold text-center uppercase text-sm py-2 px-4 rounded-lg bg-white text-black shadow-md hover:bg-green-600 hover:text-white">
+                    Ver Recibo
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

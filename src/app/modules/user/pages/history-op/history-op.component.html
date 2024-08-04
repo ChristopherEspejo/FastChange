@@ -1,7 +1,14 @@
-<div class="container mx-auto px-4 py-6">
+<div class="container min-h-screen mx-auto px-4 py-6 relative">
   <h1 class="text-3xl font-semibold text-gray-800 mb-8">Historial</h1>
-  <div class=" flex flex-col md:flex-row justify-between mb-6">
+  
+  <!-- Botón de recarga -->
+  <div class="flex justify-end mb-4">
+    <button (click)="loadTransactions()" class="bg-blue-500 text-white font-bold py-2 px-4 rounded flex items-center hover:bg-blue-600">
+      <i class="fas fa-sync-alt mr-2"></i> Actualizar resultados
+    </button>
+  </div>
 
+  <div class="flex flex-col md:flex-row justify-between mb-6">
     <div class="flex justify-between items-center mb-4 relative">
       <!-- Wrapper del Select con ícono -->
       <div class="flex border border-gray-300 bg-white rounded-md shadow-sm w-full md:max-w-sm">
@@ -19,19 +26,24 @@
       </div>
     </div>
 
-
     <div>
       <app-date-range-selector (dateRangeSelected)="handleDateRange($event)"></app-date-range-selector>
     </div>
-
   </div>
-  <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+  <!-- Mensaje cuando no hay resultados -->
+  <div *ngIf="!loading && transactions.length === 0" class="text-center py-8">
+    <i class="fas fa-folder-open text-gray-500 text-6xl mb-4"></i>
+    <p class="text-lg text-gray-500">No hay resultados que mostrar.</p>
+  </div>
+
+  <!-- Grid de transacciones -->
+  <div *ngIf="!loading && transactions.length > 0" class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div *ngFor="let transaction of transactions"
          class="bg-gradient-to-tr from-gray-50 to-white rounded-xl text-black shadow-sm hover:shadow-md transition duration-300 ease-in-out">
       <div class="p-8">
-        <div class="flex  justify-between items-center">
-          <span
-            class="text-lg font-semibold">{{ transaction.tipoOperacion === 'tipoCompra' ? 'Compra' : 'Venta' }}</span>
+        <div class="flex justify-between items-center">
+          <span class="text-lg font-semibold">{{ transaction.tipoOperacion === 'tipoCompra' ? 'Compra' : 'Venta' }}</span>
           <span [ngClass]="{
             'bg-blue-500': transaction.estado === 'espera',
             'bg-yellow-500': transaction.estado === 'pendiente',
@@ -42,7 +54,7 @@
           </span>
         </div>
         <div class="mt-4">
-          <p class="font-light">ID Transacción: {{ transaction._id }}</p>
+          <p class="font-light">ID Transacción: {{ transaction.idTransaction }}</p>
           <p>Enviado:
             <img *ngIf="transaction.tipoOperacion === 'tipoCompra'"
                  src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
@@ -69,8 +81,8 @@
             class="fas"></i>
           </button>
         </div>
-        <!-- Add payment confirmation inputs for 'espera' state -->
 
+        <!-- Detalles adicionales de la transacción -->
         <div *ngIf="transaction.showDetails" class="mt-2 bg-gray-200 p-3 rounded shadow-inner">
           <p>Cuenta Destino: {{ transaction.numeroCuentaInterbancario }}</p>
           <p>Banco Destino: {{ transaction.bancoDestino }}</p>
@@ -85,9 +97,10 @@
           </div>
         </div>
 
+        <!-- Confirmación de pago para estado "espera" -->
         <div *ngIf="transaction.estado === 'espera'" class="mt-2">
           <input type="text" [(ngModel)]="transaction.numeroOperacionTemp"
-                 class="form-input  outline-blue-100 rounded-md shadow-sm mt-1 block w-full"
+                 class="form-input outline-blue-100 rounded-md shadow-sm mt-1 block w-full"
                  placeholder="Número de operación" maxlength="16">
           <button (click)="confirmPayment(transaction)"
                   class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -96,5 +109,10 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Overlay de carga -->
+  <div *ngIf="loading" class="absolute inset-0 min-h-screen bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
+    <i class="fas fa-spinner fa-spin text-white text-4xl"></i>
   </div>
 </div>

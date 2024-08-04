@@ -1,38 +1,46 @@
 import { Component } from '@angular/core';
-import {AdminService} from "../../admin.service";
-import {ToastrService} from "ngx-toastr";
-import {MatDialog} from "@angular/material/dialog";
-import {ConfirmationDialogComponent} from "../../../../shared/components/confirmation-dialog/confirmation-dialog.component";
-import {
-  TransactionConfirmationDialogComponent
-} from "../../../../shared/components/transaction-confirmation-dialog/transaction-confirmation-dialog.component";
+import { AdminService } from "../../admin.service";
+import { ToastrService } from "ngx-toastr";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmationDialogComponent } from "../../../../shared/components/confirmation-dialog/confirmation-dialog.component";
+import { TransactionConfirmationDialogComponent } from "../../../../shared/components/transaction-confirmation-dialog/transaction-confirmation-dialog.component";
 
 @Component({
   selector: 'app-active-transactions',
   templateUrl: './active-transactions.component.html',
-  styleUrl: './active-transactions.component.scss'
+  styleUrls: ['./active-transactions.component.scss']
 })
 export class ActiveTransactionsComponent {
-  transactions : any[] = [];
-   isLoading: boolean = false;
+  transactions: any[] = [];
+  filteredTransactions: any[] = [];
+  isLoading: boolean = false;
+  searchTerm: string = '';
 
   constructor(private adminService: AdminService,
-              private toast:ToastrService,
-              private dialog:MatDialog) { }
+              private toast: ToastrService,
+              private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.fetchTransactions();
   }
 
   fetchTransactions(): void {
+    this.isLoading = true;  // Activar el indicador de carga
     this.adminService.getAllTransactions().subscribe({
       next: (data) => {
-        this.transactions = data;
-        // Filtra para obtener solo transacciones pendientes
-        this.transactions = this.transactions.filter(transaction => transaction.estado === 'pendiente');
+        this.transactions = data.filter((transaction:any) => transaction.estado === 'pendiente');
+        this.filteredTransactions = [...this.transactions];  // Inicialmente, muestra todas las transacciones
+        this.isLoading = false;  // Desactivar el indicador de carga
       },
-      error: (error) => console.error(error)
+      error: (error) => {
+        console.error(error);
+        this.isLoading = false;  // Desactivar el indicador de carga en caso de error
+      }
     });
+  }
+
+  refreshTransactions(): void {
+    this.fetchTransactions();
   }
 
   completeTransaction(id: string): void {
@@ -44,15 +52,15 @@ export class ActiveTransactionsComponent {
       if (result) {
         const { comment, image } = result;
         if (image) {
-          this.isLoading = true;  // Activar el indicador de carga
+          this.isLoading = true;
           this.adminService.completeTransaction(id, image, comment).subscribe({
             next: () => {
-              this.isLoading = false;  // Desactivar el indicador de carga
+              this.isLoading = false;
               this.fetchTransactions(); // Actualiza la lista de transacciones
               this.toast.success('Transacción completada exitosamente');
             },
             error: (error) => {
-              this.isLoading = false;  // Desactivar el indicador de carga en caso de error
+              this.isLoading = false;
               this.toast.error('Error al completar la transacción');
               console.error(error);
             }
@@ -64,9 +72,6 @@ export class ActiveTransactionsComponent {
     });
   }
 
-
-
-
   cancelTransaction(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '450px',
@@ -74,7 +79,6 @@ export class ActiveTransactionsComponent {
 
     dialogRef.afterClosed().subscribe(confirm => {
       if (confirm) {
-        // Llamar a adminService para cancelar la transacción si el usuario confirma
         this.adminService.cancelTransaction(id).subscribe({
           next: () => {
             this.fetchTransactions();
@@ -88,5 +92,15 @@ export class ActiveTransactionsComponent {
       }
     });
   }
-}
 
+  filterTransactions(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (term) {
+      this.filteredTransactions = this.transactions.filter(transaction =>
+        transaction.idTransaction.toLowerCase().includes(term)
+      );
+    } else {
+      this.filteredTransactions = [...this.transactions];  // Muestra todas las transacciones si no hay término de búsqueda
+    }
+  }
+}

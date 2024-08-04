@@ -19,10 +19,11 @@ import { Router } from "@angular/router";
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
   flagCreateAccount: boolean = false;
+  loading: boolean = false;  // Bandera para controlar el overlay de carga
 
   registerForm = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z ]+$'), Validators.maxLength(30)]),
@@ -54,13 +55,12 @@ export class RegisterComponent {
   }
 
   registerWithApple() {
+    this.loading = true;  // Mostrar el loading
     const provider = new OAuthProvider('apple.com');
 
     signInWithPopup(this.auth, provider)
       .then((result) => {
-        console.log('Result: ', result);
         if (result.user) {
-          console.log('User: ', result.user);
           result.user.getIdToken().then((idToken) => {
             this.authService.saveToken(idToken);
             this.verifyAccess(idToken);
@@ -68,18 +68,20 @@ export class RegisterComponent {
         }
       })
       .catch((error) => {
+        this.loading = false;  // Ocultar el loading si ocurre un error
         console.error('Error en el inicio de sesión con Apple:', error);
+        this.toast.error('Error en el inicio de sesión con Apple', 'Error');
       });
   }
 
   registerWithGoogle() {
+    this.loading = true;  // Mostrar el loading
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({
       prompt: 'select_account'
     });
     signInWithPopup(this.auth, provider)
       .then((result) => {
-        console.log('User: ', result.user);
         if (result.user) {
           result.user.getIdToken().then((idToken) => {
             console.log('User ID Token: ', idToken);
@@ -89,14 +91,15 @@ export class RegisterComponent {
         }
       })
       .catch((error) => {
+        this.loading = false;  // Ocultar el loading si ocurre un error
         console.error('Error en el inicio de sesión con Google:', error);
-        this.toast.error(error.message, 'Error de inicio de sesión con Google');
       });
   }
 
   verifyAccess(idToken: string) {
     this.authService.verifyLogin(idToken).subscribe({
       next: (data: any) => {
+        this.loading = false;  // Ocultar el loading después de la verificación
         if (data.user.rol === 'admin') {
           this.router.navigate(['/admin']);
         } else if (data.user.rol === 'usuario') {
@@ -104,21 +107,30 @@ export class RegisterComponent {
         }
       },
       error: ({ error }) => {
-        this.flagCreateAccount = true;
+        this.loading = false;  // Ocultar el loading en caso de error
+        if (error.exists === false) {
+          this.flagCreateAccount = true;
+        } else if (error.exists === undefined) {
+          this.toast.error('Error en el servidor. Por favor, intente nuevamente más tarde.', 'Error');
+        } else {
+          this.toast.error(error.message, 'Error');
+        }
       }
     });
   }
 
   sendRegister() {
     if (this.registerForm.valid) {
+      this.loading = true;  // Activar el overlay de carga al enviar el formulario
       const formData: RegisterData = this.registerForm.value as RegisterData;
       this.authService.registerUser(formData).subscribe({
         next: (data) => {
-          console.log('Usuario registrado correctamente', data);
+          this.loading = false;  // Desactivar el overlay de carga
           this.toast.success('Usuario registrado correctamente', 'Registro');
           this.router.navigate(['/user']);
         },
         error: ({ error }) => {
+          this.loading = false;  // Desactivar el overlay de carga
           this.toast.error(`Error al registrar el usuario, ${error.message}`, 'Registro');
         }
       });

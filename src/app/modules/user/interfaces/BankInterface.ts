@@ -4,15 +4,26 @@ export interface Bank {
   cci: boolean;
   short_name: string;
   long_name: string;
-  image: string;
+  image?: string;  // `image` es opcional según el esquema de Mongoose
   num_chars_min: number;
   num_chars_max: number;
-  format_mask: null | string;
+  format_mask?: string | null;  // Puede ser `string` o `null`
   supports_op_code: boolean;
   is_source_bank: boolean;
   is_target_bank: boolean;
   allow_credit_card: boolean;
 }
+export interface CompanyBank {
+  pk: number;
+  accountName: string;
+  accountType: string;
+  currency: string;
+  bankName: string;
+  accountNumber: string;
+  cci: string;  // Según el esquema de Mongoose, `cci` es de tipo `String`
+}
+
+
 
 export const banks: Bank[] = [
   {

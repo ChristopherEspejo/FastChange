@@ -1,5 +1,9 @@
-<!-- Componente: HomePageComponent -->
-<div class="container mx-auto p-4">
+<div class="container mx-auto p-4 relative">
+  <!-- Overlay y Spinner mientras se procesa la operación -->
+  <div *ngIf="isProcessing" class="absolute inset-0 bg-gray-100 bg-opacity-75 flex justify-center items-center z-20">
+    <div class="spinner animate-spin inline-block w-12 h-12 border-4 rounded-full border-t-4 border-t-blue-500" role="status"></div>
+  </div>
+
   <!-- Navegación de pasos -->
   <div class="flex items-center justify-center space-x-4 my-4">
     <div [ngClass]="{'text-blue-600': step === 1, 'text-gray-400': step !== 1}">1. Registra</div>
@@ -44,8 +48,6 @@
             <p *ngIf="cantidadInput.errors['pattern']">Valor debe ser mayor a 0 y hasta tres decimales.</p>
           </div>
 
-
-
           <div class="flex justify-center my-2">
             <button (click)="toggleCurrency()"
                     class="bg-blue-500 hover:from-blue-800 hover:to-blue-600 text-white p-2 rounded-full shadow-lg transform hover:scale-110 transition-transform">
@@ -73,21 +75,20 @@
       </div>
 
       <!-- Formulario de Datos Bancarios -->
-      <!-- Formulario de Datos Bancarios -->
       <div class="bg-white p-8 rounded-lg mx-auto shadow-lg flex-1 max-w-md">
         <h2 class="text-lg font-semibold mb-4">Datos Bancarios</h2>
         <form>
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Tu banco</label>
             <div class="flex justify-between items-center">
-              <span class="text-xs "> Banco donde recibirás tu dinero</span>
-              <button type="button" (click)="openBankDialog()"
+              <span class="text-xs">Banco donde recibirás tu dinero</span>
+              <button type="button" (click)="openBankDialog()" [disabled]="banksLoading"
                       class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 rounded cursor-pointer">
-                Elige el banco
+                {{ banksLoading ? 'Cargando bancos...' : 'Elige el banco' }}
               </button>
             </div>
 
-            <div *ngIf="selectedBank" class="mt-2 flex items-center">
+            <div *ngIf="selectedBank && !banksLoading" class="mt-2 flex items-center">
               <img [src]="selectedBank.image" [alt]="selectedBank.name" class="w-8 h-8 mr-2">
               <span class="text-gray-700">{{ selectedBank.name }}</span>
             </div>
@@ -116,10 +117,7 @@
                 y {{ selectedBank ? selectedBank.num_chars_max : 'N/A' }} dígitos.
               </p>
             </div>
-
           </div>
-
-
 
           <div class="mb-6">
             <label for="accountType" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Cuenta</label>
@@ -133,23 +131,27 @@
           </div>
         </form>
       </div>
-
     </div>
+
     <hr class="mt-8">
     <!-- Botón para continuar al siguiente paso -->
     <div class="flex justify-center mt-8">
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="submitForm()">
-        Continuar
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="submitForm()" [disabled]="banksLoading">
+        {{ banksLoading ? 'Esperando carga...' : 'Continuar' }}
       </button>
     </div>
   </div>
 
-
+  <!-- Contenido para el paso 2 (Transfiere) -->
+  <!-- Contenido para el paso 2 (Transfiere) -->
   <div *ngIf="step === 2" class="mx-auto px-4 sm:px-6 lg:px-8 mt-8">
     <div class="bg-white p-8 shadow-lg rounded-lg max-w-2xl mx-auto">
       <h2 class="text-2xl font-semibold mb-4 text-blue-500">Transfiere a FastChange</h2>
-      <p class="mb-4">Transfiere <span class="font-bold">{{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}</span> desde tu banca por internet a la siguiente
-        cuenta:</p>
+      <p class="mb-4">
+        Transfiere 
+        <span class="font-bold">{{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}</span> 
+        desde tu banca por internet a la siguiente cuenta:
+      </p>
       <div *ngIf="selectedFastChangeAccount" class="grid md:grid-cols-2 gap-4 mb-6">
         <div>
           <label class="block text-gray-700 text-sm font-bold mb-2">Nombre de la cuenta</label>
@@ -157,24 +159,27 @@
         </div>
         <div>
           <label class="block text-gray-700 text-sm font-bold mb-2">Tipo de cuenta y moneda</label>
-          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.accountInfo">
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" 
+          [value]="getAccountInfo(selectedFastChangeAccount)">
         </div>
         <div>
           <label class="block text-gray-700 text-sm font-bold mb-2">Banco</label>
-          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.bank">
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.bankName">
         </div>
         <div>
-          <label class="block text-gray-700 text-sm font-bold mb-2">Número de cuenta</label>
-          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.accountNumber">
+          <!-- Texto condicional para "Número de cuenta" o "Número de cuenta interbancario (CCI)" -->
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            {{ useCci ? 'Número de cuenta interbancario (CCI)' : 'Número de cuenta' }}
+          </label>
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="useCci ? selectedFastChangeAccount.cci : selectedFastChangeAccount.accountNumber">
         </div>
       </div>
       <p class="mb-4 text-red-400">Recuerda que tienes 30 minutos para realizar la transferencia </p>
-
     </div>
     <div class="bg-white p-8 shadow-lg rounded-lg flex-1 max-w-md mx-auto mt-6">
       <h2 class="text-2xl font-semibold mb-4 text-blue-500">Resumen de la operación</h2>
       <div class="space-y-4">
-        <p><span class="font-bold text-gray-800">N° ID Transacción:</span>  {{ this.responseTransaction._id }}</p>
+        <p><span class="font-bold text-gray-800">N° ID Transacción:</span>  {{ this.responseTransaction.idTransaction }}</p>
         <p><span
           class="font-bold text-gray-800">Envías a FastChange:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}
         </p>
@@ -198,7 +203,7 @@
     </div>
   </div>
 
-
+  <!-- Contenido para el paso 3 (Confirma) -->
   <div *ngIf="step === 3" class="mx-auto px-4 sm:px-6 lg:px-8 mt-8">
     <div class="flex justify-start mb-4">
       <button class="text-blue-500 hover:text-blue-700 transition duration-150 ease-in-out"
@@ -239,6 +244,4 @@
       </div>
     </div>
   </div>
-
 </div>
-
