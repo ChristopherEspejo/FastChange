@@ -146,13 +146,20 @@
   <!-- Contenido para el paso 2 (Transfiere) -->
   <div *ngIf="step === 2" class="mx-auto px-4 sm:px-6 lg:px-8 mt-8">
     <div class="bg-white p-8 shadow-lg rounded-lg max-w-2xl mx-auto">
-      <h2 class="text-2xl font-semibold mb-4 text-blue-500">Transfiere a FastChange</h2>
+      <h2 class="text-2xl font-semibold mb-4 text-blue-500">Transfiere a Cambialo</h2>
       <p class="mb-4">
         Transfiere 
         <span class="font-bold">{{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}</span> 
         desde tu banca por internet a la siguiente cuenta:
       </p>
       <div *ngIf="selectedFastChangeAccount" class="grid md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <!-- Texto condicional para "Número de cuenta" o "Número de cuenta interbancario (CCI)" -->
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            {{ useCci ? 'Número de cuenta interbancario (CCI)' : 'Número de cuenta' }}
+          </label>
+          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="useCci ? selectedFastChangeAccount.cci : selectedFastChangeAccount.accountNumber">
+        </div>
         <div>
           <label class="block text-gray-700 text-sm font-bold mb-2">Nombre de la cuenta</label>
           <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.accountName">
@@ -166,13 +173,6 @@
           <label class="block text-gray-700 text-sm font-bold mb-2">Banco</label>
           <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="selectedFastChangeAccount.bankName">
         </div>
-        <div>
-          <!-- Texto condicional para "Número de cuenta" o "Número de cuenta interbancario (CCI)" -->
-          <label class="block text-gray-700 text-sm font-bold mb-2">
-            {{ useCci ? 'Número de cuenta interbancario (CCI)' : 'Número de cuenta' }}
-          </label>
-          <input type="text" readonly class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 outline-none" [value]="useCci ? selectedFastChangeAccount.cci : selectedFastChangeAccount.accountNumber">
-        </div>
       </div>
       <p class="mb-4 text-red-400">Recuerda que tienes 30 minutos para realizar la transferencia </p>
     </div>
@@ -181,7 +181,7 @@
       <div class="space-y-4">
         <p><span class="font-bold text-gray-800">N° ID Transacción:</span>  {{ this.responseTransaction.idTransaction }}</p>
         <p><span
-          class="font-bold text-gray-800">Envías a FastChange:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}
+          class="font-bold text-gray-800">Envías a Cambialo:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}
         </p>
         <p><span
           class="font-bold text-gray-800">Cantidad que recibirás:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? '$' : 'S/' }} {{ this.responseTransaction.cantidadRecepcion }}
@@ -237,7 +237,7 @@
       <div class="bg-white p-8 shadow-lg rounded-lg flex-1 max-w-md">
         <h2 class="text-2xl font-semibold mb-4 text-blue-500">Resumen de la operación</h2>
         <div class="space-y-4">
-          <p><span class="font-bold text-gray-800">Envías a FastChange:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ responseTransaction.cantidadEnvio }}</p>
+          <p><span class="font-bold text-gray-800">Envías a Cambialo:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ responseTransaction.cantidadEnvio }}</p>
           <p><span class="font-bold text-gray-800">Recibirás:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? '$' : 'S/' }} {{ responseTransaction.cantidadRecepcion }}</p>
           <p><span class="font-bold text-gray-800">Tipo de cambio:</span> {{ responseTransaction.tipoCambio }}</p>
         </div>

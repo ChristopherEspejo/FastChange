@@ -199,7 +199,7 @@ export class HomepageComponent {
         this.userService.updateTransaction(this.responseTransaction._id, this.numeroOperacion).subscribe({
           next: (data) => {
             console.log('Transaction updated successfully:', data);
-            this.toaste.success('Envío exitoso, gracias por confiar en nosotros, lo atenderemos pronto');
+            this.toaste.success('La operación está siendo revisada, gracias por confiar en nosotros, lo atenderemos pronto');
             this.router.navigate(['/user/history']);
           },
           error: (err) => {
