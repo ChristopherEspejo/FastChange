@@ -161,7 +161,7 @@ export class HomepageComponent {
                     },
                     error: (err) => {
                       console.error('Error creating transaction:', err);
-                      this.toaste.error('Error creando transacción');
+                      this.toaste.error(err.error);
                       this.isProcessing = false; // Desactivar el estado de carga en caso de error
                     }
                   }
