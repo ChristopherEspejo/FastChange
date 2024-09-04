@@ -4,6 +4,7 @@ import { HomeComponent } from './home.component';
 import {TermsAndConditionsComponent} from "./pages/terms-and-conditions/terms-and-conditions.component";
 import {AboutUsComponent} from "./pages/about-us/about-us.component";
 import {FrequentQuestionsComponent} from "./pages/frequent-questions/frequent-questions.component";
+import { PrivacyComponent } from './pages/privacy/privacy.component';
 // Importaciones de componentes eliminadas ya que no se manejarán aquí
 
 const routes: Routes = [
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'faq',
     component: FrequentQuestionsComponent
+  },
+  {
+    path: 'privacy',
+    component: PrivacyComponent
   },
   {
     path: '**',
