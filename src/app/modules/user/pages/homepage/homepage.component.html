@@ -30,15 +30,15 @@
         <!-- Cajas de Divisas con Icono de Intercambio -->
         <div class="space-y-4 mb-8">
           <div class="flex items-center justify-between bg-white p-4 rounded-xl">
-            <span class="text-gray-800">Envías <span class="text-xs text-yellow-700">{{ changeValue == 'tipoCompra' ? 'soles' : 'dólares' }}</span> </span>
-            <img *ngIf="changeValue == 'tipoVenta'"
+            <span class="text-gray-800">Envías <span class="text-xs text-yellow-700">{{ changeValue == 'tipoCompra' ? 'dólares' : 'soles' }}</span> </span>
+            <img *ngIf="changeValue == 'tipoCompra'"
                  src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
                  alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
-            <img *ngIf="changeValue == 'tipoCompra'"
+            <img *ngIf="changeValue == 'tipoVenta'"
                  src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
                  class="inline-block w-4 h-3 mr-1">
 
-            <span class="font-bold text-gray-800">{{ changeValue == 'tipoCompra' ? ' S/' : '$' }}</span>
+            <span class="font-bold text-gray-800">{{ changeValue == 'tipoCompra' ? ' $ ' : 'S/' }}</span>
             <input type="text" [(ngModel)]="cantidadEnvio" name="cantidadEnvio"
                    required pattern="^(0*[1-9]\d*(\.\d{0,3})?|1*\.\d{1,3}[1-9])$"
                    #cantidadInput="ngModel"
@@ -57,17 +57,17 @@
 
           <div class="flex items-center justify-between bg-white p-4 rounded-xl">
             <span class="text-gray-800">Recibes <span
-              class="text-xs text-yellow-700">{{ changeValue == 'tipoCompra' ? 'dólares' : 'soles' }}</span></span>
-            <img *ngIf="changeValue == 'tipoCompra'"
+              class="text-xs text-yellow-700">{{ changeValue == 'tipoVenta' ? 'dólares' : 'soles' }}</span></span>
+            <img *ngIf="changeValue == 'tipoVenta'"
                  src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg"
                  alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
-            <img *ngIf="changeValue == 'tipoVenta'"
+            <img *ngIf="changeValue == 'tipoCompra'"
                  src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú"
                  class="inline-block w-4 h-3 mr-1">
 
-            <span class="font-bold text-gray-800">{{ changeValue == 'tipoVenta' ? 'S/' : '$' }}</span>
+            <span class="font-bold text-gray-800">{{ changeValue == 'tipoVenta' ? '$' : 'S/' }}</span>
             <input
-              [value]="changeValue == 'tipoCompra' ? (+cantidadEnvio / +changeType.tipoCompra).toFixed(3) : (+cantidadEnvio * +changeType.tipoVenta).toFixed(3)"
+              [value]="changeValue == 'tipoVenta' ? (+cantidadEnvio / +changeType.tipoVenta).toFixed(3) : (+cantidadEnvio * +changeType.tipoCompra).toFixed(3)"
               readonly class="w-32 text-right px-4 py-2 border rounded shadow-sm focus:outline-none"
               placeholder="Cantidad">
           </div>
@@ -149,7 +149,7 @@
       <h2 class="text-2xl font-semibold mb-4 text-blue-500">Transfiere a Cambialo</h2>
       <p class="mb-4">
         Transfiere 
-        <span class="font-bold">{{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}</span> 
+        <span class="font-bold">{{ this.responseTransaction.tipoOperacion == 'tipoVenta' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}</span> 
         desde tu banca por internet a la siguiente cuenta:
       </p>
       <div *ngIf="selectedFastChangeAccount" class="grid md:grid-cols-2 gap-4 mb-6">
@@ -181,10 +181,10 @@
       <div class="space-y-4">
         <p><span class="font-bold text-gray-800">N° ID Transacción:</span>  {{ this.responseTransaction.idTransaction }}</p>
         <p><span
-          class="font-bold text-gray-800">Envías a Cambialo:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}
+          class="font-bold text-gray-800">Envías a Cambialo:</span> {{ this.responseTransaction.tipoOperacion == 'tipoVenta' ? 'S/' : '$' }} {{ this.responseTransaction.cantidadEnvio }}
         </p>
         <p><span
-          class="font-bold text-gray-800">Cantidad que recibirás:</span> {{ this.responseTransaction.tipoOperacion == 'tipoCompra' ? '$' : 'S/' }} {{ this.responseTransaction.cantidadRecepcion }}
+          class="font-bold text-gray-800">Cantidad que recibirás:</span> {{ this.responseTransaction.tipoOperacion == 'tipoVenta' ? '$' : 'S/' }} {{ this.responseTransaction.cantidadRecepcion }}
         </p>
         <p><span
           class="font-bold text-gray-800">Número de cuenta donde recibirás:</span> {{ this.responseTransaction.numeroCuentaInterbancario }}
@@ -237,8 +237,8 @@
       <div class="bg-white p-8 shadow-lg rounded-lg flex-1 max-w-md">
         <h2 class="text-2xl font-semibold mb-4 text-blue-500">Resumen de la operación</h2>
         <div class="space-y-4">
-          <p><span class="font-bold text-gray-800">Envías a Cambialo:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? 'S/' : '$' }} {{ responseTransaction.cantidadEnvio }}</p>
-          <p><span class="font-bold text-gray-800">Recibirás:</span> {{ responseTransaction.tipoOperacion == 'tipoCompra' ? '$' : 'S/' }} {{ responseTransaction.cantidadRecepcion }}</p>
+          <p><span class="font-bold text-gray-800">Envías a Cambialo:</span> {{ responseTransaction.tipoOperacion == 'tipoVenta' ? 'S/' : '$' }} {{ responseTransaction.cantidadEnvio }}</p>
+          <p><span class="font-bold text-gray-800">Recibirás:</span> {{ responseTransaction.tipoOperacion == 'tipoVenta' ? '$' : 'S/' }} {{ responseTransaction.cantidadRecepcion }}</p>
           <p><span class="font-bold text-gray-800">Tipo de cambio:</span> {{ responseTransaction.tipoCambio }}</p>
         </div>
       </div>

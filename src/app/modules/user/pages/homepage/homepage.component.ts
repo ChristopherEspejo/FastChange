@@ -232,7 +232,7 @@ export class HomepageComponent {
 
   updateSelectedFastChangeAccount() {
     if (this.selectedBank) {
-      const targetCurrency = this.changeValue === 'tipoCompra' ? 'PEN' : 'USD';
+      const targetCurrency = this.changeValue === 'tipoVenta' ? 'PEN' : 'USD';
       this.selectedFastChangeAccount = this.companyBanksList.find(account =>
         account.bankName === this.selectedBank!.name && account.currency === targetCurrency
       );
@@ -248,11 +248,11 @@ export class HomepageComponent {
     if (this.selectedBank && this.selectedBank.cci === false) {
       this.selectedFastChangeAccount = this.companyBanksList.find(account =>
         account.bankName === this.selectedBank!.name &&
-        account.currency === (this.changeValue === 'tipoCompra' ? 'PEN' : 'USD')
+        account.currency === (this.changeValue === 'tipoVenta' ? 'PEN' : 'USD')
       );
     } else {
       this.selectedFastChangeAccount = this.companyBanksList.find(account =>
-        account.pk === (this.changeValue === 'tipoCompra' ? 2 : 1)
+        account.pk === (this.changeValue === 'tipoVenta' ? 2 : 1)
       );
       this.useCci = true;
     }

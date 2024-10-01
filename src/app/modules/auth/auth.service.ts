@@ -33,7 +33,7 @@ export class AuthService {
     );
   }
 
-  registerUser(user: { nombre: string, apellido: string, dni: string, email?: string }) {
+  registerUser(user: { nombre: string, apellido: string, dni: string, email?: string, tipoPersona: string }) {
     // Asume que el token ya está guardado en sessionStorage después de la autenticación
     const token = this.getToken();
     if (!token) {
@@ -41,7 +41,7 @@ export class AuthService {
       console.error('No hay token disponible');
       return throwError(() => new Error('No hay token disponible'));
     }
-
+  
     return this.httpClient.post(`${this.url}/api/users/register`, user, {
       headers: {'Authorization': `Bearer ${token}`}
     }).pipe(
@@ -51,6 +51,7 @@ export class AuthService {
       })
     );
   }
+  
 
   isAuthenticated(): Observable<boolean> {
     return this.userService.getUser().pipe(

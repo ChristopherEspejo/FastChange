@@ -54,7 +54,7 @@ export class UserService {
       })
     );
   }
-  updateUser(data: { nombre: string, apellido: string, dni: string, email?: string }): Observable<any> {
+  updateUser(data: { nombre: string, apellido: string, dni: string, email?: string, cc?:string, cci?:string }): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/users/update`, data, {
       headers: this.getHeaders()
     }).pipe(

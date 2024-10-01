@@ -42,14 +42,14 @@
           <div>
             <p class="font-light">ID Transacción: {{ transaction.idTransaction }}</p>
             <p>Enviado por el usuario:
-              <img *ngIf="transaction.tipoOperacion === 'tipoCompra'" src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú" class="inline-block w-4 h-3 mr-1">
-              <img *ngIf="transaction.tipoOperacion === 'tipoVenta'" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
-              {{ transaction.tipoOperacion === 'tipoCompra' ? 'S/':'$' }}{{ transaction.cantidadEnvio }}
+              <img *ngIf="transaction.tipoOperacion === 'tipoVenta'" src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú" class="inline-block w-4 h-3 mr-1">
+              <img *ngIf="transaction.tipoOperacion === 'tipoCompra'" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
+              {{ transaction.tipoOperacion === 'tipoVenta' ? 'S/':'$' }}{{ transaction.cantidadEnvio }}
             </p>
             <p>Transferir al usuario:
-              <img *ngIf="transaction.tipoOperacion === 'tipoCompra'" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
-              <img *ngIf="transaction.tipoOperacion === 'tipoVenta'" src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú" class="inline-block w-4 h-3 mr-1">
-              {{ transaction.tipoOperacion === 'tipoCompra' ? '$':'S/' }}{{ transaction.cantidadRecepcion }}
+              <img *ngIf="transaction.tipoOperacion === 'tipoVenta'" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de EE.UU." class="inline-block w-4 h-3 mr-1">
+              <img *ngIf="transaction.tipoOperacion === 'tipoCompra'" src="https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Peru.svg" alt="Bandera de Perú" class="inline-block w-4 h-3 mr-1">
+              {{ transaction.tipoOperacion === 'tipoVenta' ? '$':'S/' }}{{ transaction.cantidadRecepcion }}
             </p>
 
             <!-- Toggle Button for More Details -->
@@ -66,7 +66,7 @@
                     <td>{{ transaction.usuarioId.nombre }} {{ transaction.usuarioId.apellido }}</td>
                   </tr>
                   <tr>
-                    <td class="font-bold pr-2 py-1">DNI del usuario:</td>
+                    <td class="font-bold pr-2 py-1">DNI/RUC del usuario:</td>
                     <td>{{ transaction.usuarioId.dni }}</td>
                   </tr>
                   <tr>

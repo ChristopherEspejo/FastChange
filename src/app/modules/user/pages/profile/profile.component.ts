@@ -16,6 +16,9 @@ import { ToastrService } from 'ngx-toastr'; // Si usas Toastr para notificacione
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent {
+  
+  
+
   user: UserInterface = {} as UserInterface;
   userLoaded: boolean = false;  // Bandera para indicar si los datos están cargados
 
@@ -42,4 +45,23 @@ export class ProfileComponent {
       }
     });
   }
+
+  onlyAllowNumbers(event: KeyboardEvent) {
+    const charCode = event.keyCode ? event.keyCode : event.which;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  }
+
+  copyToClipboard(value: any) {
+    navigator.clipboard.writeText(value).then(
+      () => {
+        console.log('CCI copiado al portapapeles');
+      },
+      (err) => {
+        console.error('No se pudo copiar el CCI: ', err);
+      }
+    );
+  }
+  
 }

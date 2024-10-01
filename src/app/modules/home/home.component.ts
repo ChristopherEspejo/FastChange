@@ -20,12 +20,6 @@ export class HomeComponent {
   constructor(private router: Router,
               private userService: UserService) { }
 
-
-
-  calculateExchange() {
-    const exchangeRate = this.currency === 'USD_PEN' ? 3.50 : 0.285;
-    this.result = parseFloat((this.amount * exchangeRate).toFixed(2));
-  }
   ngOnInit(): void {
     this.loadChangeType();
   }

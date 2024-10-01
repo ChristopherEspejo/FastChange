@@ -9,4 +9,6 @@ export interface UserInterface {
   dni: string
   email: string
   rol: string
+  cc?: string
+  cci?: string
 }
