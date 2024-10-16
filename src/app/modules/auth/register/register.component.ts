@@ -163,6 +163,23 @@ export class RegisterComponent {
         this.loading = false; // Ocultar el loading en caso de error
         if (error.exists === false) {
           this.flagCreateAccount = true;
+  
+          // Verificar el proveedor de autenticación
+          const providerId = this.auth.currentUser?.providerData[0]?.providerId;
+          const userEmail = this.auth.currentUser?.email;
+  
+          // Verificar si el correo es de Google y no es "noreply" o de tipo Apple "privaterelay"
+          if (
+            providerId === 'google.com' &&
+            userEmail &&
+            !userEmail.startsWith('noreply') &&
+            !userEmail.endsWith('@privaterelay.appleid.com')
+          ) {
+            this.registerForm.get('email')?.setValue(userEmail);
+          } else {
+            // Si el proveedor no es Google o el email es de tipo "privaterelay", dejar el campo vacío
+            this.registerForm.get('email')?.setValue(null);
+          }
         } else if (error.exists === undefined) {
           this.toast.error(
             'Error en el servidor. Por favor, intente nuevamente más tarde.',
@@ -174,6 +191,7 @@ export class RegisterComponent {
       },
     });
   }
+  
 
   // Envío del formulario de registro
   sendRegister() {
